@@ -1,4 +1,4 @@
-import { initDB } from "./ db";
+import { initDB } from "./db";
 import app from "./app";
 import config from "./config";
 

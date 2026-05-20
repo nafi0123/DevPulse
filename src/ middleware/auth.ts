@@ -17,12 +17,10 @@ const auth = (...requiredRoles: TUserRole[]) => {
         });
       }
 
-      // Verify token
       const decoded = jwt.verify(token, config.secret as string) as JwtPayload;
       
       const role = decoded.role as TUserRole;
 
-      // Role check
       if (requiredRoles.length && !requiredRoles.includes(role)) {
         return res.status(403).json({
             success: false,
@@ -30,7 +28,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
         });
       }
 
-      // User data request-e diye dewa
       req.user = decoded;
       next();
     } catch (err) {
