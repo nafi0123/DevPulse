@@ -6,6 +6,7 @@ import express, {
   type Response,
 } from "express";
 import globalErrorHandler from "./ middleware/globalErrorHandler";
+import { userRoutes } from "./modules/user/user.route";
 import { authRoutes } from "./modules/auth/auth.route";
 
 const app: Application = express();
@@ -22,18 +23,15 @@ app.use(
 );
 
 app.get("/", (req: Request, res: Response) => {
-  //res.send("Hello World!");
   res.status(200).json({
     message: "DevPulse",
     author: "API RUNING",
   });
 });
 
-// app.use("/api/users", userRoute);
-// app.use("/api/profile", profileRoute);
-app.use("/api/auth", authRoutes);
 
-// Global Error Handling Middleware
+app.use("/api/auth", userRoutes);
+app.use("/api/auth", authRoutes);
 app.use(globalErrorHandler);
 
 export default app;

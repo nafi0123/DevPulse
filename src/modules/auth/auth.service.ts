@@ -1,21 +1,38 @@
 import bcrypt from "bcryptjs";
 import { pool } from "../../db";
+import jwt from "jsonwebtoken";
+import config from "../../config";
+import type { ILoginPayload } from "./auth.interface";
+export const loginUserFromDB = async (payload: ILoginPayload) => {
+  const { email, password } = payload;
 
-export const createUserIntoDB = async (payload: any) => {
-  const { name, email, password, role } = payload;
+  const userQuery = `SELECT * FROM users WHERE email = $1`;
+  const result = await pool.query(userQuery, [email]);
+  const user = result.rows[0];
 
-  // 1. Password Hashing
-  const hashedPassword = await bcrypt.hash(password, 10);
+  if (!user) {
+    throw new Error("User not found!");
+  }
 
-  // 2. Query execution
-  const query = `
-    INSERT INTO users (name, email, password, role)
-    VALUES ($1, $2, $3, $4)
-    RETURNING id, name, email, role, created_at, updated_at
-  `;
+  const isPasswordMatched = await bcrypt.compare(password, user.password);
+  if (!isPasswordMatched) {
+    throw new Error("Invalid password!");
+  }
 
-  const values = [name, email, hashedPassword, role || 'contributor'];
-  const result = await pool.query(query, values);
+  const jwtPayload = {
+    id: user.id,
+    name: user.name,
+    role: user.role,
+  };
 
-  return result.rows[0];
+  const accessToken = jwt.sign(jwtPayload, config.secret as string, {
+    expiresIn: "10d", 
+  });
+
+  const { password: _, ...userWithoutPassword } = user;
+
+  return {
+    token: accessToken,
+    user: userWithoutPassword,
+  };
 };
