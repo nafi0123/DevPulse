@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createIssue, getAllIssues, getSingleIssue, updateIssue } from "./issue.controller";
+import { createIssue, deleteIssue, getAllIssues, getSingleIssue, updateIssue } from "./issue.controller";
 import { USER_ROLE } from "../../types";
 import auth from "../../ middleware/auth";
 
@@ -19,5 +19,12 @@ router.patch(
   '/:id', 
   auth(USER_ROLE.maintainer, USER_ROLE.contributor), 
   updateIssue
+);
+
+
+router.delete(
+  '/:id',
+  auth(USER_ROLE.maintainer),
+  deleteIssue
 );
 export const issueRoutes = router;

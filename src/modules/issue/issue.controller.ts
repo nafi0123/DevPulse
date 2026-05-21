@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { createIssueIntoDB, getAllIssuesFromDB, getSingleIssueFromDB, updateIssueInDB } from './issue.service';
+import { createIssueIntoDB, deleteIssueFromDB, getAllIssuesFromDB, getSingleIssueFromDB, updateIssueInDB } from './issue.service';
 import sendResponse from '../../utility/sendResponse';
 
 export const createIssue = async (req: Request, res: Response) => {
@@ -90,6 +90,27 @@ export const updateIssue = async (req: Request, res: Response) => {
       statusCode: error.message.includes("authorized") || error.message.includes("own") ? 403 : 400,
       success: false,
       message: error.message || "Failed to update issue",
+    });
+  }
+};
+
+
+export const deleteIssue = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    await deleteIssueFromDB(id as string);
+ 
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Issue deleted successfully",
+      data: null, 
+    });
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: error.message === "Issue not found!" ? 404 : 400,
+      success: false,
+      message: error.message || "Failed to delete issue",
     });
   }
 };
