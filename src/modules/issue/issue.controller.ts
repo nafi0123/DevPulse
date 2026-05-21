@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { createIssueIntoDB, getAllIssuesFromDB } from './issue.service';
+import { createIssueIntoDB, getAllIssuesFromDB, getSingleIssueFromDB } from './issue.service';
 import sendResponse from '../../utility/sendResponse';
 
 export const createIssue = async (req: Request, res: Response) => {
@@ -50,4 +50,22 @@ export const getAllIssues = async (req: Request, res: Response) => {
   }
 };
 
+export const getSingleIssue = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; 
+    const result = await getSingleIssueFromDB(id);
 
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Issue retrieved successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: 404, 
+      success: false,
+      message: error.message || "Issue not found",
+    });
+  }
+};

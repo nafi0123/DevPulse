@@ -57,3 +57,25 @@ export const getAllIssuesFromDB = async (filters: any) => {
 
   return formattedIssues;
 };
+
+
+export const getSingleIssueFromDB = async (id: string) => {
+  const issueQuery = `SELECT * FROM issues WHERE id = $1`;
+  const issueResult = await pool.query(issueQuery, [id]);
+  const issue = issueResult.rows[0];
+
+  if (!issue) {
+    throw new Error("Issue not found!");
+  }
+
+  const userQuery = `SELECT id, name, role FROM users WHERE id = $1`;
+  const userResult = await pool.query(userQuery, [issue.reporter_id]);
+  const reporter = userResult.rows[0];
+
+  const { reporter_id, ...issueData } = issue;
+  
+  return {
+    ...issueData,
+    reporter: reporter || null,
+  };
+};
