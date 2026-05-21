@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { createIssueIntoDB, getAllIssuesFromDB, getSingleIssueFromDB } from './issue.service';
+import { createIssueIntoDB, getAllIssuesFromDB, getSingleIssueFromDB, updateIssueInDB } from './issue.service';
 import sendResponse from '../../utility/sendResponse';
 
 export const createIssue = async (req: Request, res: Response) => {
@@ -66,6 +66,30 @@ export const getSingleIssue = async (req: Request, res: Response) => {
       statusCode: 404, 
       success: false,
       message: error.message || "Issue not found",
+    });
+  }
+};
+
+
+export const updateIssue = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const userId = (req.user as any).id;
+    const userRole = (req.user as any).role;
+
+    const result = await updateIssueInDB(id as string, userId, userRole, req.body);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Issue updated successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: error.message.includes("authorized") || error.message.includes("own") ? 403 : 400,
+      success: false,
+      message: error.message || "Failed to update issue",
     });
   }
 };
