@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { createIssueIntoDB } from './issue.service';
+import { createIssueIntoDB, getAllIssuesFromDB } from './issue.service';
 import sendResponse from '../../utility/sendResponse';
 
 export const createIssue = async (req: Request, res: Response) => {
@@ -23,3 +23,31 @@ export const createIssue = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getAllIssues = async (req: Request, res: Response) => {
+  try {
+    const filters = {
+      sort: req.query.sort || 'newest',
+      type: req.query.type,
+      status: req.query.status,
+    };
+
+    const result = await getAllIssuesFromDB(filters);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Issues retrieved successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: error.message || "Failed to retrieve issues",
+      error: error,
+    });
+  }
+};
+
+
