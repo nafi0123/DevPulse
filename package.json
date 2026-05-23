@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/server.js",
-  "scripts": {
-    "start": "node dist/server.js",
-    "dev": "tsx watch ./src/server.ts",
-    "build": "tsup src/server.ts --format cjs --clean",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+"scripts": {
+  "start": "node dist/server.cjs",
+  "build": "tsup src/server.ts --format cjs --clean"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
