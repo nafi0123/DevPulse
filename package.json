@@ -2,10 +2,12 @@
   "name": "express",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node dist/server.cjs",
-    "build": "tsup src/server.ts --format cjs --clean"
+    "start": "node dist/server.js",
+    "dev": "tsx watch ./src/server.ts",
+    "build": "tsup",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -18,8 +20,7 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/pg": "^8.20.0",
-    "tsup": "^8.5.1",
-    "typescript": "^5.4.5"
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -29,6 +30,7 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.20.0",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0"
   }
 }
